@@ -1,11 +1,11 @@
-FROM golang:1.7.2 as builder
-RUN mkdir -p /go/src/test
-WORKDIR /go/src/test
+FROM golang:1.17 as builder
+RUN mkdir -p /simaop-git/httpserver
+WORKDIR /simaop-git/httpserver
 COPY ModuleTwo.go .
 RUN CGO_ENABLE=O GOOS=linux go build -o app .
 
-FROM alpine:latest
-RUN apk add ca-certificates
+FROM scratch
 WORKDIR /root/
-COPY --from=builder /go/src/test/app .
-CMD ["./app"]
+COPY --from=builder /simaop-git/httpserver/app .
+EXPOSE 8088
+ENTRYPOINT ["./app"]
